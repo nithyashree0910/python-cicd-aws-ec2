@@ -42,19 +42,20 @@ sh './venv/bin/python -m pytest -v'
         }
     }
 
-    stage('Health Check') {
-        steps {
-            sh '''
-                for i in $(seq 1 10); do
-                    if curl -fsS http://127.0.0.1:8000/health; then
-                        exit 0
-                    fi
-                    sleep 2
-                done
-                exit 1
-            '''
-        }
-    }
+  stage('Health Check') {
+steps {
+sh '''
+for i in $(seq 1 10); do
+if curl -fsS http://devops-api:8000/health; then
+exit 0
+fi
+sleep 2
+done
+exit 1
+'''
+}
+}
+
 }
 
 post {
