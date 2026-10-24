@@ -34,26 +34,26 @@ sh './venv/bin/python -m pytest -v'
     }
 
     stage('Deploy Locally') {
-        steps {
-            sh '''
-                docker rm -f devops-api || true
-                docker run -d --name devops-api -p 8000:8000 devops-deployment-api:1.0.0
-            '''
-        }
+    steps {
+        sh '''
+            docker rm -f devops-api || true
+            docker run -d --name devops-api --network cicd-network -p 8000:8000 devops-deployment-api:1.0.0
+        '''
     }
+}
 
   stage('Health Check') {
-steps {
-sh '''
-for i in $(seq 1 10); do
-if curl -fsS http://devops-api:8000/health; then
-exit 0
-fi
-sleep 2
-done
-exit 1
-'''
-}
+    steps {
+        sh '''
+            for i in $(seq 1 10); do
+                if curl -fsS http://devops-api:8000/health; then
+                    exit 0
+                fi
+                sleep 2
+            done
+            exit 1
+        '''
+    }
 }
 
 }
